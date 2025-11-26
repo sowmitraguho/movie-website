@@ -1,18 +1,6 @@
 import HeroSection from "./components/HeroSection/HeroSection";
 import TrendingSection from "./components/TrendingSection/TrendingSection";
-interface IMovie {
-    _id: string; // Used as key
-    title: string;
-    releaseDate: Date;
-    genre: string[];
-    runtime: number;
-    plotSummary: string;
-    posterUrl: string;
-    trailerUrl: string;
-    rating: number;
-    reviewCount: number;
-}
-
+import { IMovie } from "@/models/Movie";
 
 async function getTrendingMovies(): Promise<IMovie[]> {
     try {
