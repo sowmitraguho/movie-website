@@ -5,7 +5,6 @@ import { Play, Info, Star, Clock, Calendar, ChevronLeft, ChevronRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { IMovie } from '@/models/Movie';
 
-
 const featuredMovies: IMovie[] = [
   {
     id: 1,
