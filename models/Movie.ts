@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IMovie extends Document {
+  id: string;
   title: string;
   releaseDate: Date;
   genre: string[];

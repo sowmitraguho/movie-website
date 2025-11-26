@@ -5,45 +5,13 @@ import { Play, Info, Star, Clock, Calendar, ChevronLeft, ChevronRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { IMovie } from '@/models/Movie';
 
-const featuredMovies: IMovie[] = [
-  {
-    id: 1,
-    title: "Cosmic Odyssey",
-    plotSummary: "Embark on an epic journey through space and time as a crew of explorers discovers ancient secrets that could change the fate of humanity forever.",
-    rating: 8.9,
-    releaseDate: new Date("2024-12-11"),
-    runtime: 152,
-    genre: ["Sci-Fi", "Adventure"],
-    posterUrl: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&h=800&fit=crop"
-  } as IMovie,
-  {
-    id: 2,
-    title: "Shadow Detective",
-    plotSummary: "A brilliant detective must solve a series of mysterious crimes that blur the line between reality and illusion in this gripping psychological thriller.",
-    rating: 8.5,
-    releaseDate: new Date("2024-12-11"),
-    runtime: 152,
-    genre: ["Mystery", "Thriller"],
-    posterUrl: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&h=800&fit=crop"
-  } as IMovie,
-  {
-    id: 3,
-    title: "Dragon's Legacy",
-    plotSummary: "In a world where dragons and humans coexist, a young warrior must unite both races to fight against an ancient evil threatening their realm.",
-    rating: 9.1,
-    releaseDate: new Date("2024-12-11"),
-    runtime: 152,
-    genre: ["Fantasy", "Action"],
-    posterUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=800&fit=crop"
-  } as IMovie
-];
 
-function HeroSection(): React.JSX.Element {
+function HeroSection({ movies }: { movies: IMovie[] }): React.JSX.Element {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [featuredMovies, setFeaturedMovies] = useState<IMovie[]>(movies.slice(0, 3));
 
   const currentMovie = featuredMovies[currentIndex];
-
   useEffect(() => {
     const timer = setInterval(() => {
       handleNext();
@@ -138,7 +106,7 @@ function HeroSection(): React.JSX.Element {
                 ]
               }}
               transition={{
-                duration: 100,
+                duration: 1000,
                 repeat: Infinity,
                 ease: "linear"
               }}
@@ -209,7 +177,7 @@ function HeroSection(): React.JSX.Element {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button className="w-full sm:w-auto bg-white hover:bg-gray-100 text-black px-8 py-6 rounded-xl text-lg font-semibold shadow-2xl flex items-center justify-center gap-3 group">
+                    <Button className="w-full sm:w-auto bg-[#0f172a] hover:bg-[#0f172a]/80 text-white px-8 py-6 rounded-xl text-lg font-semibold shadow-2xl flex items-center justify-center gap-3 group">
                       <Play className="h-6 w-6 fill-current group-hover:scale-110 transition-transform" />
                       Watch Now
                     </Button>
