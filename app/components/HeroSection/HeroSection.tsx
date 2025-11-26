@@ -118,7 +118,7 @@ function HeroSection({ movies }: { movies: IMovie[] }): React.JSX.Element {
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
               <motion.div
                 className="max-w-2xl lg:max-w-3xl"
-                variants={contentVariants}
+                
                 initial="hidden"
                 animate="visible"
               >
@@ -233,8 +233,8 @@ function HeroSection({ movies }: { movies: IMovie[] }): React.JSX.Element {
           >
             <div
               className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all ${index === currentIndex
-                  ? 'bg-white w-8 md:w-12'
-                  : 'bg-white/40 hover:bg-white/60'
+                ? 'bg-white w-8 md:w-12'
+                : 'bg-white/40 hover:bg-white/60'
                 }`}
             />
           </motion.button>
