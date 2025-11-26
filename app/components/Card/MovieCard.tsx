@@ -6,25 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Heart, Play, X } from "lucide-react";
+import { IMovie } from "@/models/Movie";
 
-interface IMovie {
-  _id: string;
-  title: string;
-  releaseDate: string; // ISO string
-  genre: string[];
-  runtime: number;
-  plotSummary: string;
-  posterUrl: string;
-  trailerUrl: string;
-  rating: number;
-  reviewCount: number;
-}
 
-interface MovieCardProps {
-  movie: IMovie;
-}
 
-export default function MovieCard({ movie }: MovieCardProps) {
+
+
+export default function MovieCard({ movie }: { movie: IMovie }) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
