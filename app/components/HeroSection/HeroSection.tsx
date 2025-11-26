@@ -5,28 +5,12 @@ import { Play, Info, Star, Clock, Calendar, ChevronLeft, ChevronRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { IMovie } from '@/models/Movie';
 
-async function getTrendingMovies(): Promise<IMovie[]> {
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Movies`);
-        const data = await res.json();
-        if (!data || !data.data) return [];
-        return data.data as IMovie[];
-    } catch (error) {
-        console.error("Error fetching movies:", error);
-        return [];
-    }
-}
-function HeroSection(): React.JSX.Element {
+
+function HeroSection({ movies }: { movies: IMovie[] }): React.JSX.Element {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [featuredMovies, setFeaturedMovies] = useState<IMovie[]>([]);
-  
-  useEffect(() => {
-    getTrendingMovies().then((movies) => {
-      setFeaturedMovies(movies.slice(0, 3));
-    });
-  }, []);
-  
+  const [featuredMovies, setFeaturedMovies] = useState<IMovie[]>(movies.slice(0, 3));
+
   const currentMovie = featuredMovies[currentIndex];
   useEffect(() => {
     const timer = setInterval(() => {
@@ -100,7 +84,7 @@ function HeroSection(): React.JSX.Element {
           className="absolute inset-0"
         >
           {/* Background Image with Overlay */}
-          <div className="absolute inset-0">
+          < div className="absolute inset-0" >
             <img
               src={currentMovie.posterUrl}
               alt={currentMovie.title}
@@ -127,14 +111,14 @@ function HeroSection(): React.JSX.Element {
                 ease: "linear"
               }}
             />
-          </div>
+          </div >
 
           {/* Content */}
-          <div className="relative h-full flex items-center">
+          < div className="relative h-full flex items-center" >
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
               <motion.div
                 className="max-w-2xl lg:max-w-3xl"
-                
+  
                 initial="hidden"
                 animate="visible"
               >
@@ -210,12 +194,12 @@ function HeroSection(): React.JSX.Element {
                 </motion.div>
               </motion.div>
             </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </div >
+        </motion.div >
+      </AnimatePresence >
 
       {/* Navigation Arrows */}
-      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 md:px-8 pointer-events-none z-10">
+      < div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-4 md:px-8 pointer-events-none z-10" >
         <motion.button
           onClick={handlePrev}
           className="pointer-events-auto p-3 md:p-4 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm border border-white/20 text-white transition-all group"
@@ -232,34 +216,36 @@ function HeroSection(): React.JSX.Element {
         >
           <ChevronRight className="h-6 w-6 md:h-8 md:w-8 group-hover:scale-110 transition-transform" />
         </motion.button>
-      </div>
+      </div >
 
       {/* Pagination Dots */}
-      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-10">
-        {featuredMovies.map((_, index) => (
-          <motion.button
-            key={index}
-            onClick={() => {
-              setDirection(index > currentIndex ? 1 : -1);
-              setCurrentIndex(index);
-            }}
-            className="group relative"
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <div
-              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all ${index === currentIndex
-                ? 'bg-white w-8 md:w-12'
-                : 'bg-white/40 hover:bg-white/60'
-                }`}
-            />
-          </motion.button>
-        ))}
-      </div>
+      < div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3 z-10" >
+        {
+          featuredMovies.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => {
+                setDirection(index > currentIndex ? 1 : -1);
+                setCurrentIndex(index);
+              }}
+              className="group relative"
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <div
+                className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all ${index === currentIndex
+                  ? 'bg-white w-8 md:w-12'
+                  : 'bg-white/40 hover:bg-white/60'
+                  }`}
+              />
+            </motion.button>
+          ))
+        }
+      </div >
 
       {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
-    </div>
+      < div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
+    </div >
   );
 }
 
