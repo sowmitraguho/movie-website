@@ -5,12 +5,28 @@ import { Play, Info, Star, Clock, Calendar, ChevronLeft, ChevronRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { IMovie } from '@/models/Movie';
 
-
-function HeroSection({ movies }: { movies: IMovie[] }): React.JSX.Element {
+async function getTrendingMovies(): Promise<IMovie[]> {
+    try {
+        const res = await fetch(`/api/Movies`);
+        const data = await res.json();
+        if (!data || !data.data) return [];
+        return data.data as IMovie[];
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        return [];
+    }
+}
+function HeroSection(): React.JSX.Element {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [featuredMovies, setFeaturedMovies] = useState<IMovie[]>(movies.slice(0, 3));
-
+  const [featuredMovies, setFeaturedMovies] = useState<IMovie[]>([]);
+  
+  useEffect(() => {
+    getTrendingMovies().then((movies) => {
+      setFeaturedMovies(movies.slice(0, 3));
+    });
+  }, []);
+  
   const currentMovie = featuredMovies[currentIndex];
   useEffect(() => {
     const timer = setInterval(() => {

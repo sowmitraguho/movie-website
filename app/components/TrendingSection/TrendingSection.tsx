@@ -1,15 +1,31 @@
-
+'use client'
 import { Separator } from "@/components/ui/separator";
 import { TrendingUp } from 'lucide-react';
 import MovieCard from '../Card/MovieCard';
 import { IMovie } from "@/models/Movie";
+import { useEffect, useState } from "react";
+
+async function getTrendingMovies(): Promise<IMovie[]> {
+    try {
+        const res = await fetch(`/api/Movies`);
+        const data = await res.json();
+        if (!data || !data.data) return [];
+        return data.data as IMovie[];
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        return [];
+    }
+}
 
 
 
-
-
-export default async function TrendingPage({ movies }: { movies: IMovie[] }) {
-    //console.log(movies);
+export default function TrendingPage() {
+    const [movies, setMovies] = useState<IMovie[]>([]);
+    useEffect(() => {
+        getTrendingMovies().then((movies) => {
+          setMovies(movies.slice(0, 3));
+        });
+      }, []);
     return (
         <div className="relative pt-6 sm:pt-8 lg:pt-12 pb-12 overflow-hidden bg-[#0f172a]">
             <div className="relative z-10 w-full max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8">
