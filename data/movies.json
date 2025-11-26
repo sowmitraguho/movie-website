@@ -1,0 +1,154 @@
+[
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c4",
+    "title": "The Cybernetic Dream",
+    "releaseDate": "2024-10-25T00:00:00.000Z",
+    "genre": [
+      "Sci-Fi",
+      "Action"
+    ],
+    "runtime": 145,
+    "plotSummary": "A detective chases a rogue AI.",
+    "posterUrl": "https://i.ytimg.com/vi/Ucdcq1cFkK8/maxresdefault.jpg",
+    "trailerUrl": "https://www.youtube.com/embed/DHqLhLee8Gc?si=SoTiAfCgyYiiYeAr",
+    "rating": 4.7,
+    "reviewCount": 1520
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c5",
+    "title": "Echoes of the Past",
+    "releaseDate": "2023-11-01T00:00:00.000Z",
+    "genre": [
+      "Drama",
+      "History"
+    ],
+    "runtime": 120,
+    "plotSummary": "A family uncovers a decades-old secret.",
+    "posterUrl": "https://images.justwatch.com/poster/322660975/s718/echoes-of-the-past.jpg",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 3.9,
+    "reviewCount": 890
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c6",
+    "title": "Midnight Heist",
+    "releaseDate": "2024-01-15T00:00:00.000Z",
+    "genre": [
+      "Thriller",
+      "Crime"
+    ],
+    "runtime": 105,
+    "plotSummary": "The perfect crime unravels.",
+    "posterUrl": "https://clan.akamai.steamstatic.com/images/43483122/2f5ad11bfc2828b791205211b881f93abf07cd0a.png",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 4.2,
+    "reviewCount": 345
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c7",
+    "title": "The Last Starship",
+    "releaseDate": "2023-08-20T00:00:00.000Z",
+    "genre": [
+      "Sci-Fi",
+      "Adventure"
+    ],
+    "runtime": 160,
+    "plotSummary": "Humanity's final hope rests on a lone starship.",
+    "posterUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwPo661E6Daq8OIkETMeWZdoqRhMGL8COihA&s",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 4.5,
+    "reviewCount": 1800
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c8",
+    "title": "A Quiet Place to Think",
+    "releaseDate": "2024-03-01T00:00:00.000Z",
+    "genre": [
+      "Comedy",
+      "Slice of Life"
+    ],
+    "runtime": 95,
+    "plotSummary": "A philosophy professor attempts to find silence.",
+    "posterUrl": "https://blacknerdproblems.com/wp-content/uploads/2018/04/quiet-place.jpg",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 3.5,
+    "reviewCount": 50
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3c9",
+    "title": "Ancient Whispers",
+    "releaseDate": "2024-05-10T00:00:00.000Z",
+    "genre": [
+      "Mystery",
+      "Horror"
+    ],
+    "runtime": 115,
+    "plotSummary": "Archaeologists awaken something ancient.",
+    "posterUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKRsb_iRdRn-gjd9r8mkRa89M4OLZv8XxYtg&s",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 4,
+    "reviewCount": 700
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3ca",
+    "title": "The Algorithm King",
+    "releaseDate": "2024-06-01T00:00:00.000Z",
+    "genre": [
+      "Tech",
+      "Documentary"
+    ],
+    "runtime": 90,
+    "plotSummary": "A deep dive into social media manipulation.",
+    "posterUrl": "https://d.techtimes.com/en/full/458493/ai-meets-royalty-robot-ai-da-creates-striking-portrait-king.jpg?w=836&f=ea7deabea879f35a7dc9763a4700b05d",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 4.8,
+    "reviewCount": 2200
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3cb",
+    "title": "Rainy Day Romance",
+    "releaseDate": "2023-12-12T00:00:00.000Z",
+    "genre": [
+      "Romance",
+      "Comedy"
+    ],
+    "runtime": 100,
+    "plotSummary": "Two strangers meet on a delayed train.",
+    "posterUrl": "https://s3.r29static.com/bin/entry/e02/0,0,2000,1050/x,80/2164762/image.jpg",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 3.7,
+    "reviewCount": 450
+  },
+  {
+    "_id": "65f6c6f6d2f3c7e7b5a1b3cc",
+    "title": "Infinite Loop",
+    "releaseDate": "2024-02-29T00:00:00.000Z",
+    "genre": [
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "runtime": 130,
+    "plotSummary": "Trapped in a time paradox, he fights for survival.",
+    "posterUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUMabDzA4vLRdM_-9tAla41jE8fe6q9oX07A&s",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 4.3,
+    "reviewCount": 950
+  },
+  {
+    "id": 1764187706099,
+    "title": "The Chronos Key",
+    "releaseDate": "2025-11-03T00:00:00.000Z",
+    "genre": [
+      "Sci-Fi",
+      "Action",
+      "Thriller"
+    ],
+    "runtime": 135,
+    "plotSummary": "A rogue physicist discovers a device that can briefly manipulate localized time, leading a global intelligence agency on a frantic chase to prevent a catastrophic paradox.",
+    "posterUrl": "https://gpstatic.com/acache/47/67/1/us/t620x300-74fd6155192492172cfdd9a9a28c28e1.jpg",
+    "trailerUrl": "https://www.youtube.com/embed/_UxkBUZkD_Y?si=4vGRhVXACdHtaoxP",
+    "rating": 3.2,
+    "reviewCount": 210,
+    "createdAt": "2025-11-26T20:08:26.099Z"
+  }
+]
