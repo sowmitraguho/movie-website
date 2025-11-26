@@ -37,8 +37,8 @@ export default async function TrendingPage({ movies }: { movies: IMovie[] }) {
                         sm:grid-cols-3 
                         md:grid-cols-4 
                         gap-4">
-                        {movies.map((movie) => (
-                            <MovieCard key={movie._id} movie={movie as any as IMovie} />
+                        {movies.map((movie, idx) => (
+                            <MovieCard key={idx} movie={movie as any as IMovie} />
                         ))}
                     </div>
                 ) : (
