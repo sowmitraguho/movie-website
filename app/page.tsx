@@ -4,7 +4,7 @@ import { IMovie } from "@/models/Movie";
 
 async function getTrendingMovies(): Promise<IMovie[]> {
     try {
-        const res = await fetch(`http://localhost:3000/api/Movies`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/Movies`);
         const data = await res.json();
         if (!data || !data.data) return [];
         return data.data as IMovie[];
