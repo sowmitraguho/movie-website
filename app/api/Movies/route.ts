@@ -1,26 +1,35 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import Movie from '@/models/Movie';
+import { dbConnect } from "@/lib/dbConnect";
+import Movie from "@/models/Movie";
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  await dbConnect();
   try {
-    const movies = await Movie.find({}).limit(20).sort({ releaseDate: -1 });
-    return NextResponse.json(movies, { status: 200 });
+    await dbConnect();
+
+    const movies = await Movie.find({}).sort({ createdAt: -1 });
+
+    return NextResponse.json(
+      {
+        success: true,
+        count: movies.length,
+        data: movies,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: 'Failed to fetch movies' }, { status: 500 });
+    console.error("GET /api/Movies Error:", error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   await dbConnect();
-  try {
-    const body = await request.json();
-    const movie = await Movie.create(body);
-    return NextResponse.json(movie, { status: 201 });
-  } catch (error) {
-    // Handle validation errors or duplicate key errors
-    return NextResponse.json({ message: 'Failed to create movie' }, { status: 400 });
-  }
+
+  const data = await req.json();
+  const newMovie = await Movie.create(data);
+
+  return Response.json(newMovie, { status: 201 });
 }

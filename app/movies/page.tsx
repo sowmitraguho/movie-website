@@ -2,23 +2,20 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence, useInView, Variants, Transition } from 'framer-motion';
-import { Play, X, ChevronLeft, ChevronRight, Expand, Minimize, Share2, Search, XCircle } from 'lucide-react';
+import { Play, X, ChevronLeft, ChevronRight, Expand, Minimize, Share2, Search, XCircle, Heart, Star, Clock } from 'lucide-react';
 
-interface Project {
+// --- Redesigned Data Structure (IMovie) ---
+interface IMovie {
   id: number;
   title: string;
-  category: string;
-  thumbnailUrl: string;
-  videoUrl: string;
-  description: string;
-  client: string;
-  director: string;
-  year: string;
-  location: string;
-  camera: string;
-  lenses: string;
-  format: string;
-  aspectRatio: string;
+  releaseDate: Date;
+  genre: string[];
+  runtime: number; // in minutes
+  plotSummary: string;
+  posterUrl: string; // URL to a movie poster image
+  trailerUrl: string;
+  rating: number; // Calculated average rating (e.g., 0.0 - 5.0)
+  reviewCount: number; // Number of reviews
 }
 
 interface Category {
@@ -42,103 +39,102 @@ interface AnimationVariants extends Variants {
   };
 }
 
+// --- Data Redesign (Mapping old Project to new IMovie structure) ---
 const categories: Category[] = [
-  { id: 1, name: 'Documentary' },
-  { id: 2, name: 'Wedding' },
-  { id: 3, name: 'Travel' },
-  { id: 4, name: 'Film' },
+  { id: 1, name: 'Action' },
+  { id: 2, name: 'Comedy' },
+  { id: 3, name: 'Thriller' },
+  { id: 4, name: 'Drama' },
 ];
 
-const projects: Project[] = [
+const movieData: IMovie[] = [
   {
     id: 1,
-    title: "Cinematic Journey",
-    category: "film",
-    thumbnailUrl: "https://img.freepik.com/premium-photo/professional-cinema-camera-recording-commercial-studio_237404-9535.jpg",
-    videoUrl: "https://www.youtube.com/embed/EngW7tLk6R8?si=JqVwUbeK03kWJPcE",
-    description: "A breathtaking visual narrative exploring the depths of human emotion through stunning cinematography and compelling storytelling.",
-    client: "Independent Film",
-    director: "Alex Rodriguez",
-    year: "2024",
-    location: "Los Angeles, CA",
-    camera: "RED Komodo 6K",
-    lenses: "Zeiss Supreme Primes",
-    format: "6K RAW",
-    aspectRatio: "2.39:1"
+    title: "The Silent Code",
+    releaseDate: new Date('2023-10-26'),
+    genre: ["Thriller", "Action"],
+    runtime: 145,
+    plotSummary: "A brilliant cryptographer must race against time to decode a message that threatens global security.",
+    posterUrl: "https://images.unsplash.com/photo-1542204165-21d1b5a59663?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+    trailerUrl: "https://www.youtube.com/embed/EngW7tLk6R8?si=JqVwUbeK03kWJPcE",
+    rating: 4.2,
+    reviewCount: 3400
   },
   {
     id: 2,
-    title: "Brand Vision",
-    category: "commercial",
-    thumbnailUrl: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&h=600&fit=crop",
-    videoUrl: "https://www.youtube.com/embed/D0UnqGm_miA?si=0f0PwzfJNJ-CWQpq",
-    description: "A dynamic commercial piece that captures the essence of modern lifestyle and brand identity.",
-    client: "TechCorp Inc.",
-    director: "Sarah Chen",
-    year: "2024",
-    location: "New York, NY",
-    camera: "Sony FX9",
-    lenses: "Sony G Master",
-    format: "4K XAVC",
-    aspectRatio: "16:9"
+    title: "Neon City Lights",
+    releaseDate: new Date('2024-03-15'),
+    genre: ["Sci-Fi", "Drama"],
+    runtime: 98,
+    plotSummary: "In a futuristic megalopolis, two lonely souls find connection amid the blinding neon lights.",
+    posterUrl: "https://images.unsplash.com/photo-1518331535741-dd8250073289?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80",
+    trailerUrl: "https://www.youtube.com/embed/D0UnqGm_miA?si=0f0PwzfJNJ-CWQpq",
+    rating: 3.8,
+    reviewCount: 1200
   },
   {
     id: 3,
-    title: "Documentary Truth",
-    category: "documentary",
-    thumbnailUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=600&fit=crop",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "An intimate documentary exploring real stories and authentic human experiences.",
-    client: "National Geographic",
-    director: "Michael Torres",
-    year: "2023",
-    location: "Various",
-    camera: "Canon EOS C300 Mark III",
-    lenses: "Canon CN-E Primes",
-    format: "4K Cinema RAW",
-    aspectRatio: "16:9"
+    title: "The Grand Expedition",
+    releaseDate: new Date('2023-07-01'),
+    genre: ["Adventure", "Documentary"],
+    runtime: 180,
+    plotSummary: "A stunning chronicle of the journey across the world's most remote mountain ranges.",
+    posterUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop",
+    trailerUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    rating: 4.9,
+    reviewCount: 9800
   },
   {
     id: 4,
-    title: "Musical Harmony",
-    category: "music",
-    thumbnailUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop",
-    videoUrl: "https://www.youtube.com/embed/u_sIfs7Yom4?si=MOYOivOMl5mAc-wk",
-    description: "A vibrant music video that blends visual artistry with rhythmic storytelling.",
-    client: "Universal Music",
-    director: "Emma Johnson",
-    year: "2024",
-    location: "Nashville, TN",
-    camera: "ARRI Alexa Mini LF",
-    lenses: "ARRI Signature Primes",
-    format: "4.5K ProRes",
-    aspectRatio: "2.35:1"
+    title: "Heartbeat of the Earth",
+    releaseDate: new Date('2024-01-20'),
+    genre: ["Drama", "Romance"],
+    runtime: 105,
+    plotSummary: "A story of star-crossed lovers set against the backdrop of a changing global climate.",
+    posterUrl: "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=400&h=600&fit=crop",
+    trailerUrl: "https://www.youtube.com/embed/u_sIfs7Yom4?si=MOYOivOMl5mAc-wk",
+    rating: 4.5,
+    reviewCount: 5200
   },
   {
     id: 5,
-    title: 'Tuscany Wedding Trailer | Emma & James',
-    category: 'wedding',
-    thumbnailUrl: 'https://i.ytimg.com/vi/fjFB3B16cAo/hq720.jpg',
-    videoUrl: 'https://www.youtube.com/embed/rkpzYNB6xks?si=0ukSpD6me3CYdRiY',
-    description: 'A cinematic trailer of Emma and James’s wedding in the Tuscan hills—pure romance, festivity, and family love.',
-    client: 'Emma & James',
-    director: 'Willow Tree Films',
-    year: '2022',
-    location: 'Tuscany, Italy',
-    camera: 'Sony FX3 + DJI Ronin',
-    lenses: 'Sigma 35mm, Sony 85mm',
-    format: '4K',
-    aspectRatio: '2.35:1',
+    title: 'The Wedding Crashers',
+    releaseDate: new Date('2022-05-10'),
+    genre: ['Comedy', 'Romance'],
+    runtime: 110,
+    plotSummary: 'Two friends sneak into weddings to meet women, until one of them falls for a bridesmaid.',
+    posterUrl: 'https://images.unsplash.com/photo-1587902035650-25272a275464?w=400&h=600&fit=crop',
+    trailerUrl: 'https://www.youtube.com/embed/rkpzYNB6xks?si=0ukSpD6me3CYdRiY',
+    rating: 4.0,
+    reviewCount: 2100,
   },
 ];
 
+// Helper to render lucide-react Star icons based on rating (0-5 scale)
+const RatingDisplay = ({ rating }: { rating: number }) => {
+  const roundedRating = Math.round(rating);  
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    stars.push(
+      <Star
+        key={i}
+        className={`h-4 w-4 transition-colors duration-200 ${
+          i < roundedRating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-500/30'
+        }`}
+      />
+    );
+  }
+  return <div className="flex items-center space-x-0.5">{stars}</div>;
+};
+
+// --- Custom Hook for Scroll Animations ---
 const useScrollAnimation = () => {
   const containerAnimation: AnimationVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: 0.1,
         delayChildren: 0.1,
       },
     },
@@ -159,57 +155,159 @@ const useScrollAnimation = () => {
   return { containerAnimation, itemAnimation };
 };
 
-const VideoGallery: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+// --- Movie Card Component (Refactored) ---
+const MovieCard: React.FC<{ movie: IMovie, openProject: (movie: IMovie) => void }> = ({ movie, openProject }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  const cardHoverAnimation = {
+    scale: 1.05,
+    y: -5,
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.4)",
+    transition: { stiffness: 300, damping: 20 }
+  };
+
+  const itemAnimation: AnimationVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut' as const,
+      },
+    },
+  };
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent modal from opening
+    e.preventDefault(); // Prevent navigation
+    setIsFavorite(prev => !prev);
+    // Add real favorite logic here
+  };
+
+  const handleError = () => {
+    setImageError(true);
+  };
+
+  const releaseYear = new Date(movie.releaseDate).getFullYear();
+
+  return (
+    <motion.div
+      layout
+      variants={itemAnimation}
+      className="relative group cursor-pointer rounded-xl overflow-hidden aspect-[2/3] bg-gray-800 border border-gray-700 shadow-xl"
+      onClick={() => openProject(movie)}
+      whileHover={cardHoverAnimation}
+      initial="hidden"
+      animate="visible"
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="w-full h-full">
+        {!imageError ? (
+          <img
+            src={movie.posterUrl}
+            alt={movie.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            onError={handleError}
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+            <span className="text-gray-400 text-sm font-medium">Poster N/A</span>
+          </div>
+        )}
+
+        {/* Overlay Content */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4 sm:p-5">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-1 line-clamp-2">
+            {movie.title} ({releaseYear})
+          </h3>
+          <div className="flex items-center space-x-2 text-gray-300 text-sm mb-3">
+             <RatingDisplay rating={movie.rating} />
+             <span className="text-xs text-yellow-400 font-bold">{movie.rating.toFixed(1)}</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg hover:bg-white transition-colors duration-300">
+              <Play className="text-white ml-1 w-5 h-5 group-hover:text-black" />
+            </div>
+            <span className="text-white text-sm font-medium">Watch Trailer</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Top Badges and Heart Button */}
+      <div className="absolute top-3 right-3 z-10">
+        <motion.button
+          onClick={handleFavoriteClick}
+          className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white border border-white/20 hover:bg-red-500 transition-colors"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <Heart 
+            className={`w-4 h-4 transition-colors ${isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-300 fill-gray-300/20'}`} 
+          />
+        </motion.button>
+      </div>
+
+      <div className="absolute top-3 left-3 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white uppercase tracking-wider font-semibold">
+        {movie.genre[0] || 'Unknown'}
+      </div>
+    </motion.div>
+  );
+}
+
+// --- Main Gallery Component ---
+const MovieGallery: React.FC = () => {
+  const [selectedMovie, setSelectedMovie] = useState<IMovie | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [category, setCategory] = useState<string>('all');
-  const [imageError, setImageError] = useState<{ [key: number]: boolean }>({});
-  const [currentProjectIndex, setCurrentProjectIndex] = useState<number>(0);
+  const [currentMovieIndex, setCurrentMovieIndex] = useState<number>(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
 
   const ref = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const { containerAnimation, itemAnimation } = useScrollAnimation();
 
-  const categoryOptions = ['all', ...categories.map(cat => cat.name.toLowerCase())];
+  const categoryOptions = ['all', ...Array.from(new Set(movieData.flatMap(m => m.genre))).map(g => g.toLowerCase())];
 
-  const filteredProjects = useMemo(() => {
-    return projects.filter(project => {
-      const matchesCategory = category === 'all' || project.category === category;
-      const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           project.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredMovies = useMemo(() => {
+    return movieData.filter(movie => {
+      const matchesCategory = category === 'all' || movie.genre.map(g => g.toLowerCase()).includes(category);
+      const matchesSearch = movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            movie.plotSummary.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [category, searchTerm]);
 
-  const openProject = useCallback((project: Project) => {
-    const projectIndex = filteredProjects.findIndex(p => p.id === project.id);
-    setCurrentProjectIndex(projectIndex);
-    setSelectedProject(project);
+  const openMovie = useCallback((movie: IMovie) => {
+    const movieIndex = filteredMovies.findIndex(p => p.id === movie.id);
+    setCurrentMovieIndex(movieIndex);
+    setSelectedMovie(movie);
     setIsPlaying(false);
     document.body.style.overflow = 'hidden';
-  }, [filteredProjects]);
+  }, [filteredMovies]);
 
-  const closeProject = useCallback(() => {
-    setSelectedProject(null);
+  const closeMovie = useCallback(() => {
+    setSelectedMovie(null);
     setIsPlaying(false);
     setIsFullscreen(false);
     document.body.style.overflow = 'auto';
   }, []);
 
-  const navigateProject = useCallback((direction: 'next' | 'prev') => {
+  const navigateMovie = useCallback((direction: 'next' | 'prev') => {
     const newIndex = direction === 'next'
-      ? (currentProjectIndex + 1) % filteredProjects.length
-      : (currentProjectIndex - 1 + filteredProjects.length) % filteredProjects.length;
+      ? (currentMovieIndex + 1) % filteredMovies.length
+      : (currentMovieIndex - 1 + filteredMovies.length) % filteredMovies.length;
 
-    setCurrentProjectIndex(newIndex);
-    setSelectedProject(filteredProjects[newIndex]);
+    setCurrentMovieIndex(newIndex);
+    setSelectedMovie(filteredMovies[newIndex]);
     setIsPlaying(false);
-  }, [currentProjectIndex, filteredProjects]);
+  }, [currentMovieIndex, filteredMovies]);
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -221,32 +319,30 @@ const VideoGallery: React.FC = () => {
   }, []);
 
   const handleShare = useCallback(async () => {
-    if (navigator.share && selectedProject) {
+    if (navigator.share && selectedMovie) {
       try {
         await navigator.share({
-          title: selectedProject.title,
-          text: selectedProject.description,
-          url: window.location.href
+          title: selectedMovie.title,
+          text: selectedMovie.plotSummary,
+          url: window.location.href // Use a dedicated URL in a real app
         });
       } catch {
-        navigator.clipboard.writeText(window.location.href);
+         // Fallback: Copy URL to clipboard
+         navigator.clipboard.writeText(window.location.href);
       }
     }
-  }, [selectedProject]);
+  }, [selectedMovie]);
 
   const getEmbedUrl = (url: string): string => {
-    if (!url) return '';
-    if (url.includes('youtube')) {
-      return url + '?autoplay=1&rel=0';
-    } else if (url.includes('vimeo')) {
-      return url + '?autoplay=1';
+    if (!url.includes('autoplay')) {
+      return url + (url.includes('?') ? '&' : '?') + 'autoplay=1&rel=0';
     }
     return url;
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!selectedProject) {
+      if (!selectedMovie) {
         if (e.key === '/' && !isSearchActive) {
           e.preventDefault();
           setIsSearchActive(true);
@@ -256,15 +352,15 @@ const VideoGallery: React.FC = () => {
       }
       switch (e.key) {
         case 'Escape':
-          closeProject();
+          closeMovie();
           break;
         case 'ArrowLeft':
           e.preventDefault();
-          navigateProject('prev');
+          navigateMovie('prev');
           break;
         case 'ArrowRight':
           e.preventDefault();
-          navigateProject('next');
+          navigateMovie('next');
           break;
         case ' ':
           e.preventDefault();
@@ -287,11 +383,7 @@ const VideoGallery: React.FC = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedProject, isPlaying, navigateProject, closeProject, handleShare, toggleFullscreen, isSearchActive]);
-
-  const handleImageError = (id: number) => {
-    setImageError(prev => ({ ...prev, [id]: true }));
-  };
+  }, [selectedMovie, isPlaying, navigateMovie, closeMovie, handleShare, toggleFullscreen, isSearchActive]);
 
   const toggleSearch = () => {
     setIsSearchActive(!isSearchActive);
@@ -322,17 +414,9 @@ const VideoGallery: React.FC = () => {
     }
   };
 
-  const cardHoverAnimation = {
-    scale: 1.03,
-    y: -8,
-    transition: {
-      stiffness: 300,
-      damping: 20
-    }
-  };
 
   return (
-    <section id="gallery" className="py-12 sm:py-16 md:py-20 bg-black min-h-screen relative overflow-hidden">
+    <section id="movie-gallery" className="py-12 sm:py-16 md:py-20 bg-black min-h-screen relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           ref={ref}
@@ -345,89 +429,38 @@ const VideoGallery: React.FC = () => {
             variants={itemAnimation}
             className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 text-white tracking-tight"
           >
-            Explore All Movies
+            Stream the Latest Releases
           </motion.h2>
           <motion.div
             variants={itemAnimation}
-            className="w-24 h-1 bg-white mx-auto mb-6"
+            className="w-24 h-1 bg-red-600 mx-auto mb-6"
           />
           <motion.p
             variants={itemAnimation}
             className="text-gray-300 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed"
           >
-            Explore a curated selection of movies showcasing storytelling and visual artistry.
-            <span className="block text-sm text-gray-400 mt-2">Press &quot;/&quot; to search or use arrow keys to navigate</span>
+            Explore a curated selection of movies showcasing the best of modern cinema.
+            <span className="block text-sm text-gray-400 mt-2">Press &quot;/&quot; to search or use arrow keys to navigate the modal</span>
           </motion.p>
         </motion.div>
 
+        {/* Filter and Search Bar */}
         <motion.div
           variants={containerAnimation}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="mb-12 sm:mb-16"
+          className="mb-12 sm:mb-16 flex flex-col md:flex-row justify-between items-center gap-4"
         >
-          <div className="mb-8 flex justify-start">
-            <motion.div className="relative w-full max-w-md">
-              <div className="relative flex items-center">
-                <motion.button
-                  onClick={toggleSearch}
-                  className={`flex items-center gap-2 px-4 py-2 bg-black border border-gray-600 rounded text-gray-300 hover:bg-gray-800 transition-all duration-300 ${
-                    isSearchActive ? 'w-full' : 'w-auto'
-                  }`}
-                  whileHover={buttonHoverAnimation}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Search size={20} />
-                  {!isSearchActive && <span>Search Projects</span>}
-                </motion.button>
-                <AnimatePresence>
-                  {isSearchActive && (
-                    <motion.div
-                      variants={searchVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="hidden"
-                      className="absolute inset-0 flex items-center"
-                    >
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onBlur={() => !searchTerm && setIsSearchActive(false)}
-                        placeholder="Search projects..."
-                        className="w-full px-4 py-2 pl-10 bg-black border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-white"
-                      />
-                      <Search size={20} className="absolute left-3 text-gray-400" />
-                      {searchTerm && (
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => {
-                            setSearchTerm('');
-                            searchInputRef.current?.focus();
-                          }}
-                          className="absolute right-3 text-gray-400 hover:text-white"
-                        >
-                          <XCircle size={20} />
-                        </motion.button>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4 order-2 md:order-1">
             {categoryOptions.map((cat) => (
               <motion.button
                 key={cat}
                 variants={itemAnimation}
-                className={`px-6 py-3 rounded uppercase tracking-widest text-sm font-semibold transition-all duration-300 ${
+                className={`px-4 sm:px-6 py-2 rounded-full uppercase tracking-widest text-xs font-semibold transition-all duration-300 ${
                   category === cat
-                    ? 'bg-white text-black'
-                    : 'border border-gray-600 text-gray-200 hover:border-white hover:text-white'
-                } focus:outline-none focus:border-white`}
+                    ? 'bg-red-600 text-white shadow-lg shadow-red-600/50'
+                    : 'border border-gray-600 text-gray-300 hover:border-red-600 hover:text-white'
+                } focus:outline-none`}
                 onClick={() => setCategory(cat)}
                 whileHover={buttonHoverAnimation}
                 whileTap={{ scale: 0.95 }}
@@ -436,107 +469,111 @@ const VideoGallery: React.FC = () => {
               </motion.button>
             ))}
           </div>
+
+          {/* Search Input */}
+          <motion.div className="relative w-full max-w-md order-1 md:order-2">
+            <div className="relative flex items-center">
+              <motion.button
+                onClick={toggleSearch}
+                className={`flex items-center justify-center h-10 px-4 py-2 bg-black border border-gray-700 rounded-full text-gray-300 hover:bg-gray-800 transition-all duration-300 ${
+                  isSearchActive ? 'opacity-0 pointer-events-none absolute' : 'w-40'
+                }`}
+                whileHover={buttonHoverAnimation}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Search size={20} />
+                {!isSearchActive && <span className='ml-2'>Search</span>}
+              </motion.button>
+              <AnimatePresence>
+                {isSearchActive && (
+                  <motion.div
+                    variants={searchVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    className="absolute inset-0 flex items-center"
+                  >
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onBlur={() => !searchTerm && setIsSearchActive(false)}
+                      placeholder="Search movie titles or plot summaries..."
+                      className="w-full h-10 px-4 pl-10 bg-gray-900 border border-red-600/50 rounded-full text-white placeholder-gray-400 focus:outline-none focus:border-red-600 transition-all duration-300"
+                    />
+                    <Search size={20} className="absolute left-3 text-red-600" />
+                    {searchTerm && (
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => {
+                          setSearchTerm('');
+                          searchInputRef.current?.focus();
+                        }}
+                        className="absolute right-3 text-gray-400 hover:text-white"
+                      >
+                        <XCircle size={20} />
+                      </motion.button>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
         </motion.div>
 
+        {/* Movie Grid */}
         <motion.div
           layout
           variants={containerAnimation}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-3 gap-6 sm:gap-8"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
-              <motion.div
-                layout
-                key={project.id}
-                variants={itemAnimation}
-                className="relative group cursor-pointer rounded overflow-hidden h-72 sm:h-80 bg-gray-900 border border-gray-800"
-                onClick={() => openProject(project)}
-                whileHover={cardHoverAnimation}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.4 }}
-              >
-                {!imageError[project.id] ? (
-                  <img
-                    src={project.thumbnailUrl}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    onError={() => handleImageError(project.id)}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                    <span className="text-gray-400 text-sm font-medium">Image unavailable</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
-                  <motion.h3
-                    className="text-lg sm:text-xl font-bold text-white mb-1"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    {project.title}
-                  </motion.h3>
-                  <motion.p
-                    className="text-gray-300 text-sm uppercase tracking-wider mb-3"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    {project.category}
-                  </motion.p>
-                  <motion.div
-                    className="flex items-center space-x-3"
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <div className="w-12 h-12 rounded bg-white flex items-center justify-center">
-                      <Play className="text-black ml-1" size={16} />
-                    </div>
-                    <span className="text-white text-sm font-medium">View Project</span>
-                  </motion.div>
-                </div>
-                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 rounded text-xs text-gray-300 uppercase tracking-wider font-semibold">
-                  {project.category}
-                </div>
-              </motion.div>
+            {filteredMovies.map((movie) => (
+              <MovieCard 
+                key={movie.id} 
+                movie={movie} 
+                openProject={openMovie} 
+              />
             ))}
           </AnimatePresence>
         </motion.div>
 
-        {filteredProjects.length === 0 && (
+        {/* No Results Message */}
+        {filteredMovies.length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center py-12"
           >
-            <p className="text-gray-400 text-lg">No projects found matching your criteria.</p>
-            <button
+            <p className="text-gray-400 text-lg">No movies found matching your criteria. 🎥</p>
+            <motion.button
               onClick={() => { setCategory('all'); setSearchTerm(''); }}
-              className="mt-4 px-6 py-2 bg-white text-black rounded hover:bg-gray-200 transition-colors"
+              className="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+              whileHover={buttonHoverAnimation}
+              whileTap={{ scale: 0.95 }}
             >
               Clear Filters
-            </button>
+            </motion.button>
           </motion.div>
         )}
       </div>
 
+      {/* --- Movie Trailer Modal (Retaining Original Structure/Style) --- */}
       <AnimatePresence>
-        {selectedProject && (
+        {selectedMovie && (
           <motion.div
             className={`fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 sm:p-6 ${isFullscreen ? 'p-0' : ''}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={closeProject}
+            onClick={closeMovie}
           >
             <motion.div
-              ref={modalRef}
+              // Removed modalRef as it's not strictly necessary for this refactoring
               className={`relative bg-black w-full overflow-y-auto rounded shadow border border-gray-800 ${
                 isFullscreen ? 'max-w-none max-h-none h-full rounded-none' : 'max-w-6xl max-h-[90vh]'
               }`}
@@ -546,63 +583,77 @@ const VideoGallery: React.FC = () => {
               transition={{ damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Control Bar */}
               <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 bg-gradient-to-b from-black/80 to-transparent">
                 <div className="flex items-center space-x-4">
                   <span className="text-white text-sm">
-                    {currentProjectIndex + 1} / {filteredProjects.length}
+                    {currentMovieIndex + 1} / {filteredMovies.length}
                   </span>
-                  <span className="text-gray-400 text-sm">Use ← → to navigate</span>
+                  <span className="text-gray-400 text-sm hidden sm:inline">Use ← → to navigate</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button
+                  <motion.button
                     onClick={handleShare}
                     className="w-10 h-10 rounded bg-gray-800/80 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
                     title="Share (S)"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <Share2 size={16} />
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
                     onClick={toggleFullscreen}
                     className="w-10 h-10 rounded bg-gray-800/80 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
                     title="Fullscreen (F)"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     {isFullscreen ? <Minimize size={16} /> : <Expand size={16} />}
-                  </button>
-                  <button
-                    onClick={closeProject}
+                  </motion.button>
+                  <motion.button
+                    onClick={closeMovie}
                     className="w-10 h-10 rounded bg-gray-800/80 flex items-center justify-center text-white hover:bg-gray-500 transition-colors duration-300"
                     title="Close (Esc)"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <X size={16} />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
-              {filteredProjects.length > 1 && (
+              {/* Navigation Arrows */}
+              {filteredMovies.length > 1 && (
                 <>
-                  <button
-                    onClick={() => navigateProject('prev')}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded bg-black/60 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
+                  <motion.button
+                    onClick={() => navigateMovie('prev')}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
                     title="Previous (←)"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    onClick={() => navigateProject('next')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded bg-black/60 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
+                  </motion.button>
+                  <motion.button
+                    onClick={() => navigateMovie('next')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors duration-300"
                     title="Next (→)"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     <ChevronRight size={20} />
-                  </button>
+                  </motion.button>
                 </>
               )}
 
+              {/* Video Player */}
               <div className={`relative bg-black ${isFullscreen ? 'h-full' : 'aspect-video'}`}>
                 {isPlaying ? (
                   <iframe
-                    src={getEmbedUrl(selectedProject.videoUrl)}
+                    key={selectedMovie.id} // Key ensures iframe re-renders on navigation
+                    src={getEmbedUrl(selectedMovie.trailerUrl)}
                     className="w-full h-full"
-                    title={selectedProject.title}
+                    title={selectedMovie.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -610,25 +661,27 @@ const VideoGallery: React.FC = () => {
                 ) : (
                   <>
                     <img
-                      src={selectedProject.thumbnailUrl}
-                      alt={selectedProject.title}
-                      className="w-full h-full object-cover"
+                      src={selectedMovie.posterUrl}
+                      alt={selectedMovie.title}
+                      className="w-full h-full object-cover opacity-80"
                     />
+                    
                     <div className="absolute inset-0 flex items-center justify-center">
                       <motion.button
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded bg-white flex items-center justify-center"
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 flex items-center justify-center shadow-2xl"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={handlePlayClick}
                         title="Play (Space)"
                       >
-                        <Play className="text-black ml-1" size={24} />
+                        <Play className="text-white ml-1" size={24} />
                       </motion.button>
                     </div>
                   </>
                 )}
               </div>
 
+              {/* Movie Details */}
               {!isFullscreen && (
                 <motion.div
                   className="p-6 sm:p-8 md:p-10"
@@ -637,31 +690,32 @@ const VideoGallery: React.FC = () => {
                   transition={{ delay: 0.2 }}
                 >
                   <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 text-white">
-                    {selectedProject.title}
+                    {selectedMovie.title} ({new Date(selectedMovie.releaseDate).getFullYear()})
                   </h2>
-                  <p className="text-gray-300 text-sm uppercase tracking-widest mb-4">
-                    {selectedProject.category}
-                  </p>
+                  <div className="flex flex-wrap items-center space-x-4 text-gray-300 text-sm uppercase tracking-widest mb-4">
+                    <p className="font-semibold text-yellow-400 flex items-center space-x-1"><Star size={16} className="fill-yellow-400 text-yellow-400" /> <span>{selectedMovie.rating.toFixed(1)} / 5.0</span></p>
+                    <p className="font-semibold text-red-500">{selectedMovie.genre.join(' / ')}</p>
+                    <p className="font-semibold flex items-center space-x-1"><Clock size={16} /> <span>{selectedMovie.runtime} min</span></p>
+                  </div>
                   <p className="text-gray-200 mb-8 text-base sm:text-lg leading-relaxed">
-                    {selectedProject.description}
+                    {selectedMovie.plotSummary}
                   </p>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
-                      <h3 className="text-white font-semibold mb-4 text-lg">Project Details</h3>
+                      <h3 className="text-white font-semibold mb-4 text-lg border-b border-gray-700/50 pb-2">Movie Details</h3>
                       <ul className="text-gray-200 space-y-3">
-                        <li><span className="font-semibold">Client:</span> {selectedProject.client}</li>
-                        <li><span className="font-semibold">Director:</span> {selectedProject.director}</li>
-                        <li><span className="font-semibold">Year:</span> {selectedProject.year}</li>
-                        <li><span className="font-semibold">Location:</span> {selectedProject.location}</li>
+                        <li><span className="font-semibold text-gray-400">Release Date:</span> {new Date(selectedMovie.releaseDate).toLocaleDateString()}</li>
+                        <li><span className="font-semibold text-gray-400">Runtime:</span> {selectedMovie.runtime} minutes</li>
+                        <li><span className="font-semibold text-gray-400">Reviews:</span> {selectedMovie.reviewCount.toLocaleString()}</li>
                       </ul>
                     </div>
                     <div>
-                      <h3 className="text-white font-semibold mb-4 text-lg">Technical Specs</h3>
+                      <h3 className="text-white font-semibold mb-4 text-lg border-b border-gray-700/50 pb-2">Technical Specs (Placeholder)</h3>
                       <ul className="text-gray-200 space-y-3">
-                        <li><span className="font-semibold">Camera:</span> {selectedProject.camera}</li>
-                        <li><span className="font-semibold">Lenses:</span> {selectedProject.lenses}</li>
-                        <li><span className="font-semibold">Format:</span> {selectedProject.format}</li>
-                        <li><span className="font-semibold">Aspect Ratio:</span> {selectedProject.aspectRatio}</li>
+                        {/* Technical details fields are removed as they are irrelevant to the new IMovie schema */}
+                        <li><span className="font-semibold text-gray-400">Director:</span> TBD</li>
+                        <li><span className="font-semibold text-gray-400">Aspect Ratio:</span> 2.39:1 (Cinemascope)</li>
+                        <li><span className="font-semibold text-gray-400">Format:</span> 4K Digital</li>
                       </ul>
                     </div>
                   </div>
@@ -675,4 +729,4 @@ const VideoGallery: React.FC = () => {
   );
 };
 
-export default VideoGallery;
+export default MovieGallery;
