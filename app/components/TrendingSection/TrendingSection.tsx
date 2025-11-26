@@ -61,7 +61,8 @@ export default async function TrendingPage() {
                 <header className="mb-6 sm:mb-8 lg:mb-10">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col">
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground flex items-center">
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight flex items-center 
+                                           bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 text-transparent bg-clip-text">
                                 <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-primary mr-3" />
                                 Trending Movies
                             </h1>

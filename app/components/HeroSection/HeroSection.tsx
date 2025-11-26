@@ -3,49 +3,40 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Info, Star, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { IMovie } from '@/models/Movie';
 
-interface Movie {
-  id: number;
-  title: string;
-  description: string;
-  rating: number;
-  year: string;
-  duration: string;
-  genre: string;
-  image: string;
-}
 
-const featuredMovies: Movie[] = [
+const featuredMovies: IMovie[] = [
   {
     id: 1,
     title: "Cosmic Odyssey",
-    description: "Embark on an epic journey through space and time as a crew of explorers discovers ancient secrets that could change the fate of humanity forever.",
+    plotSummary: "Embark on an epic journey through space and time as a crew of explorers discovers ancient secrets that could change the fate of humanity forever.",
     rating: 8.9,
-    year: "2024",
-    duration: "2h 28m",
-    genre: "Sci-Fi, Adventure",
-    image: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&h=800&fit=crop"
-  },
+    releaseDate: new Date("2024-12-11"),
+    runtime: 152,
+    genre: ["Sci-Fi", "Adventure"],
+    posterUrl: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&h=800&fit=crop"
+  } as IMovie,
   {
     id: 2,
     title: "Shadow Detective",
-    description: "A brilliant detective must solve a series of mysterious crimes that blur the line between reality and illusion in this gripping psychological thriller.",
+    plotSummary: "A brilliant detective must solve a series of mysterious crimes that blur the line between reality and illusion in this gripping psychological thriller.",
     rating: 8.5,
-    year: "2024",
-    duration: "2h 15m",
-    genre: "Mystery, Thriller",
-    image: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&h=800&fit=crop"
-  },
+    releaseDate: new Date("2024-12-11"),
+    runtime: 152,
+    genre: ["Mystery", "Thriller"],
+    posterUrl: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&h=800&fit=crop"
+  } as IMovie,
   {
     id: 3,
     title: "Dragon's Legacy",
-    description: "In a world where dragons and humans coexist, a young warrior must unite both races to fight against an ancient evil threatening their realm.",
+    plotSummary: "In a world where dragons and humans coexist, a young warrior must unite both races to fight against an ancient evil threatening their realm.",
     rating: 9.1,
-    year: "2024",
-    duration: "2h 45m",
-    genre: "Fantasy, Action",
-    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=800&fit=crop"
-  }
+    releaseDate: new Date("2024-12-11"),
+    runtime: 152,
+    genre: ["Fantasy", "Action"],
+    posterUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=800&fit=crop"
+  } as IMovie
 ];
 
 function HeroSection(): React.JSX.Element {
@@ -110,7 +101,7 @@ function HeroSection(): React.JSX.Element {
   };
 
   return (
-    <div className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden rounded-3xl">
+    <div className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden">
       <AnimatePresence initial={false} custom={direction} mode="wait">
         <motion.div
           key={currentIndex}
@@ -128,14 +119,14 @@ function HeroSection(): React.JSX.Element {
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
             <img
-              src={currentMovie.image}
+              src={currentMovie.posterUrl}
               alt={currentMovie.title}
               className="w-full h-full object-cover"
             />
             {/* Gradient Overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-            
+
             {/* Animated Gradient Glow */}
             <motion.div
               className="absolute inset-0 opacity-30"
@@ -148,7 +139,7 @@ function HeroSection(): React.JSX.Element {
                 ]
               }}
               transition={{
-                duration: 10,
+                duration: 100,
                 repeat: Infinity,
                 ease: "linear"
               }}
@@ -191,11 +182,11 @@ function HeroSection(): React.JSX.Element {
                   </div>
                   <div className="flex items-center gap-2 text-gray-300">
                     <Calendar className="h-4 w-4" />
-                    <span>{currentMovie.year}</span>
+                    <span>{currentMovie.releaseDate.toString()}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-300">
                     <Clock className="h-4 w-4" />
-                    <span>{currentMovie.duration}</span>
+                    <span>{currentMovie.runtime}</span>
                   </div>
                   <div className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
                     <span className="text-white text-sm font-medium">{currentMovie.genre}</span>
@@ -207,7 +198,7 @@ function HeroSection(): React.JSX.Element {
                   variants={itemVariants}
                   className="text-gray-200 text-base md:text-lg lg:text-xl mb-6 md:mb-8 leading-relaxed max-w-xl"
                 >
-                  {currentMovie.description}
+                  {currentMovie.plotSummary}
                 </motion.p>
 
                 {/* Buttons */}
@@ -274,11 +265,10 @@ function HeroSection(): React.JSX.Element {
             whileTap={{ scale: 0.9 }}
           >
             <div
-              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all ${
-                index === currentIndex
+              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all ${index === currentIndex
                   ? 'bg-white w-8 md:w-12'
                   : 'bg-white/40 hover:bg-white/60'
-              }`}
+                }`}
             />
           </motion.button>
         ))}
