@@ -1,11 +1,7 @@
-
 import { Separator } from "@/components/ui/separator";
 import { TrendingUp } from 'lucide-react';
 import MovieCard from '../Card/MovieCard';
 import { IMovie } from "@/models/Movie";
-
-
-
 
 
 export default async function TrendingPage({ movies }: { movies: IMovie[] }) {
