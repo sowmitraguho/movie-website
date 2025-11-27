@@ -39,7 +39,7 @@ const AddMovie: React.FC = () => {
 
     console.log("Submitting:", payload);
 
-    const res = await axios.post("/api/Movies", payload);
+    const res = await axios.post("https://movie-website-server-ebon.vercel.app/api/movies", payload);
 
     if (res.status === 201) {
       // Optional: show toast here if you use sonner/shadcn toast
