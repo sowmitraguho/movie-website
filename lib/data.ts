@@ -1,20 +1,33 @@
-import { IMovie } from "@/models/Movie";
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
-export async function getMovies(): Promise<IMovie[]> {
-    try {
-        const res = await fetch(`${baseURL}/api/Movies`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = await res.json();
-            console.log(data);
-        if (!data || !data.data) return [];
-        return data.data as IMovie[];
-    } catch (error) {
-        console.error("Error fetching movies:", error);
-        return [];
-    }
+const filePath = path.join(process.cwd(), "data", "movies.json");
+
+// Read JSON file
+function readMovies() {
+  try {
+    const data = fs.readFileSync(filePath, "utf8");
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
+}
+
+// Write to JSON file
+function writeMovies(movies: any[]) {
+  fs.writeFileSync(filePath, JSON.stringify(movies, null, 2));
+}
+
+// GET: Fetch all movies
+export async function getMovies(): Promise<any[]> {
+  const movies = readMovies();
+  return movies;
+}
+
+// POST: Add a new movie
+export async function addMovie(movie: any) {
+  const movies = readMovies();
+  movies.push(movie);
+  writeMovies(movies);
 }

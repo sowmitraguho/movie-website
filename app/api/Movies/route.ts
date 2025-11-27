@@ -1,27 +1,8 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const filePath = path.join(process.cwd(), "data", "movies.json");
-
-// Read JSON file
-function readMovies() {
-  try {
-    const data = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(data);
-  } catch (err) {
-    return [];
-  }
-}
-
-// Write to JSON file
-function writeMovies(movies: any[]) {
-  fs.writeFileSync(filePath, JSON.stringify(movies, null, 2));
-}
-
+import {getMovies, addMovie} from "@/lib/data";
 // GET: Fetch all movies
 export async function GET() {
-  const movies = readMovies();
+  const movies = getMovies();
   return NextResponse.json({ success: true, data: movies }, { status: 200 });
 }
 
@@ -29,16 +10,12 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const movies = readMovies();
-
     const newMovie = {
       id: Date.now(),        // auto ID
       ...body,               // movie fields from frontend
       createdAt: new Date(),
     };
-
-    movies.push(newMovie);
-    writeMovies(movies);
+    addMovie(newMovie);
 
     return NextResponse.json(
       { success: true, data: newMovie },
